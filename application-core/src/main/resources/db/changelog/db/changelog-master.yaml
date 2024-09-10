@@ -1,3 +1,7 @@
 databaseChangeLog:
   - include:
       file: classpath:db/changelog/db/changelog-role.yaml
+  - include:
+      file: classpath:db/changelog/db/changelog-permission.yaml
+  - include:
+      file: classpath:db/changelog/db/changelog-role_permissions.yaml
