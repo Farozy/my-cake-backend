@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: role
