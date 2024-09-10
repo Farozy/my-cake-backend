@@ -18,7 +18,7 @@ databaseChangeLog:
                     nullable: false
         - addPrimaryKey:
             columnNames: role_id, permission_id
-            tableName: role_permission
+            tableName: role_permissions
         - addForeignKeyConstraint:
             constraintName: fk_role_permissions_role
             baseColumnNames: role_id
