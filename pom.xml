@@ -24,6 +24,8 @@
     <modules>
         <module>application-core</module>
         <module>role-module</module>
+        <module>permission-module</module>
+        <module>roles_permissions</module>
     </modules>
     <scm>
         <connection/>

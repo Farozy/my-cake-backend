@@ -4,7 +4,7 @@ databaseChangeLog:
       author: farozy
       changes:
         - createTable:
-            tableName: roles
+            tableName: permissions
             columns:
               - column:
                   name: id
@@ -18,6 +18,8 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
-      rollback:
-        - dropTable:
-            tableName: roles
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: true

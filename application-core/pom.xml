@@ -43,5 +43,15 @@
             <artifactId>role-module</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>permission-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>roles_permissions</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
