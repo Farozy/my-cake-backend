@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>permission-module</artifactId>
+    <artifactId>shared-utility</artifactId>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
@@ -18,33 +18,17 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>org.farozy</groupId>
-            <artifactId>access-control</artifactId>
+            <artifactId>shared-exception</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.farozy</groupId>
-            <artifactId>shared-validation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.farozy</groupId>
-            <artifactId>shared-utility</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
-
 </project>

@@ -25,7 +25,11 @@
         <module>application-core</module>
         <module>role-module</module>
         <module>permission-module</module>
-        <module>roles_permissions</module>
+        <module>access-control</module>
+        <module>shared-exception</module>
+        <module>shared-utility</module>
+        <module>shared-validation</module>
+        <module>user-module</module>
     </modules>
     <scm>
         <connection/>
@@ -41,8 +45,14 @@
         <spring-boot-starter-data-jpa.version>3.3.3</spring-boot-starter-data-jpa.version>
         <lombok.version>1.18.34</lombok.version>
         <liquibase-core.version>4.29.1</liquibase-core.version>
-        <postgresql.version>42.7.4</postgresql.version>
         <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
+        <jjwt-jackson.version>0.12.6</jjwt-jackson.version>
+        <jjwt-impl.version>0.12.6</jjwt-impl.version>
+        <jjwt-api.version>0.12.6</jjwt-api.version>
+        <slf4j-api.version>2.0.16</slf4j-api.version>
+        <spring-boot-starter-security.version>3.3.3</spring-boot-starter-security.version>
+        <spring-boot-starter-mail.version>3.3.3</spring-boot-starter-mail.version>
+        <spring-boot-starter-thymeleaf.version>3.3.3</spring-boot-starter-thymeleaf.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -79,14 +89,46 @@
                 <version>${liquibase-core.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${jakarta.validation-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt-jackson.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt-impl.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-boot-starter-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-mail</artifactId>
+                <version>${spring-boot-starter-mail.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+                <version>${spring-boot-starter-thymeleaf.version}</version>
             </dependency>
 
         </dependencies>

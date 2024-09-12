@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "SUPER_ADMIN"
+              - column:
+                  name: description
+                  value: "Super Admin with all permissions"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "ADMIN"
+              - column:
+                  name: description
+                  value: "Admin with elevated permissions"
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: "CUSTOMER"
+              - column:
+                  name: description
+                  value: "User who places orders"
+      rollback:
+        - delete:
+            tableName: roles
+            where: "name = 'SUPER_ADMIN'"
+        - delete:
+            tableName: roles
+            where: "name = 'ADMIN'"
+        - delete:
+            tableName: roles
+            where: "name = 'CUSTOMER'"
