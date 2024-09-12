@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: name
+                  value: "USER_READ"
+              - column:
+                  name: description
+                  value: "Permission to read user data"
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: name
+                  value: "USER_CREATE"
+              - column:
+                  name: description
+                  value: "Permission to create user data"
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: name
+                  value: "USER_UPDATE"
+              - column:
+                  name: description
+                  value: "Permission to update user data"
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: name
+                  value: "USER_DELETE"
+              - column:
+                  name: description
+                  value: "Permission to delete user data"
+      rollback:
+        - delete:
+            tableName: permissions
+            where: "name = 'USER_READ'"
+        - delete:
+            tableName: permissions
+            where: "name = 'USER_CREATE'"
+        - delete:
+            tableName: permissions
+            where: "name = 'USER_UPDATE'"
+        - delete:
+            tableName: permissions
+            where: "name = 'USER_DELETE'"

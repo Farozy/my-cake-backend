@@ -1,7 +1,15 @@
 databaseChangeLog:
   - include:
-      file: classpath:db/changelog/db/changelog-role.yaml
+      file: classpath:db/changelog/db/create-roles-table.yaml
   - include:
-      file: classpath:db/changelog/db/changelog-permission.yaml
+      file: classpath:db/changelog/db/create-permissions-table.yaml
   - include:
-      file: classpath:db/changelog/db/changelog-role_permissions.yaml
+      file: classpath:db/changelog/db/create-role_permissions-table.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-roles.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-permissions.yaml
+  - include:
+      file: classpath:db/changelog/db/create-users-table.yaml
+  - include:
+      file: classpath:db/changelog/db/create-user_roles-table.yaml
