@@ -57,9 +57,9 @@ public class RegistrationUserService {
     private User saveNewUser(RegistrationDto request) {
         User user = new User();
         String passwordEncode = passwordEncoder.encode(request.getPassword());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setUsername(request.getUsername());
+//        user.setFirstName(request.getFirstName());
+//        user.setLastName(request.getLastName());
+//        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncode);
 

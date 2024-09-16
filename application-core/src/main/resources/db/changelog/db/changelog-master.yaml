@@ -18,6 +18,8 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/db/create-registrations-table.yaml
   - include:
+      file: classpath:db/changelog/db/create-otps-table.yaml
+  - include:
       file: classpath:db/changelog/db/insert-registration_user.yaml
   - include:
       file: classpath:db/changelog/db/insert-user_role.yaml

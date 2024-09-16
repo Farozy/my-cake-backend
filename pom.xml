@@ -56,6 +56,7 @@
         <spring-boot-starter-security.version>3.3.2</spring-boot-starter-security.version>
         <spring-boot-starter-mail.version>3.3.3</spring-boot-starter-mail.version>
         <spring-boot-starter-thymeleaf.version>3.3.3</spring-boot-starter-thymeleaf.version>
+        <twilio.version>10.5.0</twilio.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -137,6 +138,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-thymeleaf</artifactId>
                 <version>${spring-boot-starter-thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.twilio.sdk</groupId>
+                <artifactId>twilio</artifactId>
+                <version>${twilio.version}</version>
             </dependency>
 
         </dependencies>

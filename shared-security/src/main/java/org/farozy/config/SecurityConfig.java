@@ -46,6 +46,7 @@ public class SecurityConfig {
             "/auth/verify-token/confirm/**",
             "/login/**",
             "/register",
+            "/api/otp/**",
             "/oauth2/callback/*",
             "/dashboard/**",
             "/home/**"
