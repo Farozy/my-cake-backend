@@ -1,3 +1,6 @@
+app:
+  base-url: http://localhost:8080
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/mycake
@@ -14,3 +17,66 @@ spring:
     change-log: classpath:db/changelog/db/changelog-master.yaml
     enabled: true
     rollback-file: /home/farozy/Projects/liquibase/rollback.yaml
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: webcoding11@gmail.com
+    password: kupf ayud tczb qnbh
+    protocol: smtp
+
+  security:
+    oauth2:
+      client:
+        registration:
+          # Github
+          github:
+            client-id: Ov23liDY8NZIi7jQ6Tgr
+            client-secret: a9fd02e969847d5bb1a22847b3410c7c00dafa57
+            scope:
+              - user
+              - user:email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Github
+
+          # Google
+          google:
+            client-id: 574251278215-g8u6at32fkdmi1c5sqs2smugeomet2ua.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Google
+
+          # Facebook
+          facebook:
+            client-id: 1015919703573854
+            client-secret: ecdef34bb8725303e58d226484bbb59c
+            scope:
+              - email
+              - public_profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: Facebook
+
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id
+          facebook:
+            authorization-uri: https://www.facebook.com/v10.0/dialog/oauth
+            token-uri: https://graph.facebook.com/v10.0/oauth/access_token
+            user-info-uri: https://graph.facebook.com/me?fields=id,name,email,picture
+            user-name-attribute: id
+      authorizationserver:
+        endpoint:
+          authorization-uri:
+            - "{base-url}/oauth2/redirect"
+            - "{base-url}://oauth2/redirect"
+            - "{base-url}://oauth2/redirect"
+
+jwt:
+  secret: 7cpJAOPn6u/6JjyaGVIHKVnuu4MPLttesogH9zf6qmcDvVXwMbYIapoEaPGx3FedO/8RqbsKkXsv8fOSE72BZg==
+  expirationMS: 86400000

@@ -47,4 +47,8 @@
 
     </dependencies>
 
+    <build>
+        <finalName>permission_module</finalName>
+    </build>
+
 </project>

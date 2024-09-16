@@ -13,3 +13,13 @@ databaseChangeLog:
       file: classpath:db/changelog/db/create-users-table.yaml
   - include:
       file: classpath:db/changelog/db/create-user_roles-table.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-user.yaml
+  - include:
+      file: classpath:db/changelog/db/create-registrations-table.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-registration_user.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-user_role.yaml
+  - include:
+      file: classpath:db/changelog/db/insert-role_permission.yaml

@@ -50,4 +50,8 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>user_module</finalName>
+    </build>
 </project>

@@ -50,4 +50,9 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <finalName>role_module</finalName>
+    </build>
+
 </project>
