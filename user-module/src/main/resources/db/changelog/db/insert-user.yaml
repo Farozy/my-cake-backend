@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: dummyexam
+              - column:
+                  name: email
+                  value: dummyexam00@gmail.com
+              - column:
+                  name: password
+                  value: $2a$12$w7RTGgbiLsWrS5S7F447gOaPkSTp9mnaG8CNXsRwHFNjQZ6vVMDay
+      rollback:
+        - delete:
+            tableName: users
+            where: "username = 'admin'"

@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - insert:
+            tableName: registrations
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(SELECT id FROM users WHERE username = 'dummyexam')"
+
+      rollback:
+        - delete:
+            tableName: registrations
+            where: "user_id = (SELECT id FROM users WHERE username = 'dummyexam')"
