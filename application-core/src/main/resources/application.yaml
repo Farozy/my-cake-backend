@@ -1,0 +1,30 @@
+app:
+  base-url: http://localhost:8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mycake
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db/changelog-master.yaml
+    enabled: true
+    rollback-file: /home/farozy/Projects/liquibase/rollback.yaml
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: webcoding11@gmail.com
+    password: kupf ayud tczb qnbh
+    protocol: smtp
+
+jwt:
+  secret: 7cpJAOPn6u/6JjyaGVIHKVnuu4MPLttesogH9zf6qmcDvVXwMbYIapoEaPGx3FedO/8RqbsKkXsv8fOSE72BZg==
+  expirationMS: 86400000

@@ -32,6 +32,3 @@ build/
 ### VS Code ###
 .vscode/
 
-application-core/src/main/resources/application.yaml
-application-core/src/main/resources/*.yaml
-
