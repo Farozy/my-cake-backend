@@ -35,12 +35,11 @@ public class RegistrationDto {
     @ValidWhatsAppNumber
     private String whatsAppNumber;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
-    private String password;
-
-    @ImageFileSize
-    @ImageFileType
-    private MultipartFile image;
+//    @Size(min = 8, message = "Password must be at least 8 characters long")
+//    private String password;
+//
+//    @ImageFileSize
+//    @ImageFileType
+//    private MultipartFile image;
 
 }

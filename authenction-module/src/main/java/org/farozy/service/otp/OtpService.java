@@ -1,11 +1,14 @@
 package org.farozy.service.otp;
 
+import org.farozy.entity.Otp;
+import org.farozy.entity.User;
+
 public interface OtpService {
 
-    String generateOtp();
+    String generateOtpForUser(String emailOrWhatsapp);
 
     void sendOtp(String otp, String userPhoneNumber);
 
-    boolean validateOtp(String phoneNumber, String otp);
+    boolean validateOtp(String identifier, String otp);
 
 }

@@ -19,7 +19,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: otp_code
-                  type: VARCHAR(10)
+                  type: INT
                   constraints:
                     nullable: false
               - column:

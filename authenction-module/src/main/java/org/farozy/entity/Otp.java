@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -23,15 +24,20 @@ public class Otp {
     private User user;
 
     @Column(name = "otp_code", nullable = false, length = 10)
-    private String otpCode;
+    private Integer otpCode;
 
     @Column(name = "is_used", nullable = false)
     private boolean isUsed = false;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at", nullable = false, updatable = false)
+    private Date updatedAt = new Date();
 
 }

@@ -2,18 +2,23 @@ package org.farozy.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.RegistrationDto;
+import org.farozy.entity.Otp;
 import org.farozy.entity.Registration;
 import org.farozy.entity.User;
 import org.farozy.enums.AuthProvider;
 import org.farozy.enums.RegistrationStatus;
 import org.farozy.exception.ResourceAlreadyExistsException;
+import org.farozy.repository.OtpRepository;
 import org.farozy.repository.RegistrationRepository;
 import org.farozy.repository.UserRepository;
 import org.farozy.service.jwt.JwtEmailService;
-import org.farozy.utility.JwtUtils;
+import org.farozy.service.jwt.JwtOtpService;
+import org.farozy.service.otp.OtpService;
 import org.springframework.stereotype.Component;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +27,9 @@ public class RegistrationUserService {
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
     private final JwtEmailService jwtEmailService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
+    private final JwtOtpService jwtOtpService;
+    private final OtpService otpService;
+    private final OtpRepository otpRepository;
 
     @Transactional
     public User registerUser(RegistrationDto request) {
@@ -32,8 +38,13 @@ public class RegistrationUserService {
 
             saveRegistration(newUser);
 
-            String token = jwtUtils.generateToken(newUser.getEmail());
-            jwtEmailService.sendTokenToEmail(newUser.getEmail(), token);
+            String emailOrWhatsapp = request.getEmail() != null ? request.getEmail() : request.getWhatsAppNumber();
+
+            String generateOtp = otpService.generateOtpForUser(emailOrWhatsapp);
+
+            saveOtp(newUser, generateOtp);
+
+            jwtOtpService.sendOtpToEmail(newUser.getEmail(), generateOtp);
 
             return newUser;
         } catch (ResourceAlreadyExistsException e) {
@@ -56,13 +67,19 @@ public class RegistrationUserService {
 
     private User saveNewUser(RegistrationDto request) {
         User user = new User();
-        String passwordEncode = passwordEncoder.encode(request.getPassword());
-//        user.setFirstName(request.getFirstName());
-//        user.setLastName(request.getLastName());
-//        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncode);
+        Optional.ofNullable(request.getEmail()).ifPresent(user::setEmail);
+        Optional.ofNullable(request.getWhatsAppNumber()).ifPresent(user::setWhatsappNumber);
 
         return userRepository.save(user);
+    }
+
+    private void saveOtp(User newUser, String generateOtp) {
+        Otp otp = new Otp();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
+        otp.setUser(newUser);
+        otp.setOtpCode(Integer.valueOf(generateOtp));
+        otp.setExpiresAt(expiresAt);
+
+        otpRepository.save(otp);
     }
 }
