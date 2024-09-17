@@ -19,14 +19,14 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 150, nullable = false)
+    @Column(length = 150)
     private String username;
 
-    @Column(length = 150, nullable = false, unique = true)
+    @Column(length = 150, unique = true)
     private String email;
 
     @JsonIgnore
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String password;
 
     @Column(name = "first_name")
@@ -41,8 +41,8 @@ public class User implements Serializable {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "phone")
-    private String phoneNumber;
+    @Column(name = "whatsapp_number")
+    private String whatsappNumber;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)

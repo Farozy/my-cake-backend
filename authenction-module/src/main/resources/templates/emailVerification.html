@@ -1,67 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification</title>
-    <style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Verifikasi Akun Anda</title>
+    <style media="all" type="text/css">
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: Helvetica, sans-serif;
+            font-size: 16px;
+            line-height: 1.3;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            background-color: #f4f5f6;
             margin: 0;
             padding: 0;
         }
 
-        .container {
+        table {
+            border-collapse: separate;
             width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        .header {
-            text-align: center;
-            padding: 10px 0;
+        table td {
+            font-family: Helvetica, sans-serif;
+            font-size: 16px;
+            vertical-align: top;
+        }
+
+        .container {
+            margin: 0 auto;
+            max-width: 600px;
+            padding-top: 24px;
         }
 
         .content {
-            padding: 20px;
-            text-align: center;
+            display: block;
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 0;
         }
 
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: #007bff;
-            color: #ffffff !important;
-            text-decoration: none;
-            border-radius: 5px;
+        .main {
+            background: #ffffff;
+            border: 1px solid #eaebed;
+            border-radius: 16px;
+            width: 100%;
+        }
+
+        .wrapper {
+            box-sizing: border-box;
+            padding: 24px;
         }
 
         .footer {
             text-align: center;
-            padding: 10px 0;
-            font-size: 12px;
-            color: #888888;
+            width: 100%;
+            padding-top: 24px;
+        }
+
+        .footer td,
+        .footer p,
+        .footer span,
+        .footer a {
+            color: #9a9ea6;
+            font-size: 16px;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0867ec;
+            text-decoration: underline;
+        }
+
+        .otp-code {
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #f4f5f6;
+            padding: 12px;
+            border: 2px dashed #0867ec;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .preheader {
+            color: transparent;
+            display: none;
+            height: 0;
+            max-height: 0;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            visibility: hidden;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h2 th:text="'Hi ' + ${name}"></h2>
-    </div>
     <div class="content">
-        <p>Thank you for registering. Please click the button below to verify your email address:</p>
-        <a th:href="${url}" class="button">Verify Email</a>
-        <p>If you did not request this email, please ignore it.</p>
-    </div>
-    <div class="footer">
-        <p>© 2024 Your Company. All rights reserved.</p>
+        <p>Hai</p>
+        <p>Silahkan masukkan Kode OTP anda:</p>
+        <div class="otp-code" style="letter-spacing: 0.5em; padding-left: 12px; padding-right: 0" th:text="${otp}">12345</div>
+        <p>
+            Perlu diperhatikan, kode OTP ini hanya berlaku untuk jangka waktu tertentu.
+        </p>
+        <p>
+            Jika Anda tidak memasukkan kode OTP sebelum waktu habis, Anda harus mengajukan
+            permintaan OTP baru untuk melanjutkan.
+        </p>
+        <p>
+            Demi keamanan akun Anda, jangan berikan kode OTP ini kepada siapapun.
+        </p>
+        <div class="footer">
+            <p>Kelurahan Sumur Licin, Desa Kedawang, Kec. Nguling, Kab. Pasuruan</p>
+            <p id="copyright"></p>
+        </div>
     </div>
 </div>
+<script>
+    const year = new Date().getFullYear();
+    document.getElementById('copyright').innerHTML = `&copy; ${year} My Cake. All rights reserved.`;
+</script>
 </body>
 </html>
