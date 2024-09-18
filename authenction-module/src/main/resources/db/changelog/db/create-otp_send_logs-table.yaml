@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - createTable:
+            tableName: otp_send_logs
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: whatsapp_number
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: otp_count
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_sent
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false

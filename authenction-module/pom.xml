@@ -84,6 +84,11 @@
             <artifactId>shared-validation</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>shared-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

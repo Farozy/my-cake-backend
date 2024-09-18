@@ -5,9 +5,11 @@ import org.farozy.enums.UserRoleType;
 import org.farozy.exception.ErrorResponseBuilder;
 import org.farozy.filter.CsrfTokenFilter;
 import org.farozy.filter.JwtAuthenticationFilter;
+import org.farozy.security.CustomAuditEventRepository;
 import org.farozy.security.oauth2.CustomOAuth2AuthenticationFailureHandler;
 import org.farozy.security.oauth2.CustomOAuth2AuthenticationSuccessHandler;
 import org.farozy.security.oauth2.CustomOAuth2UserService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,7 @@ public class SecurityConfig {
     private final CustomOAuth2AuthenticationSuccessHandler customOAuth2AuthenticationSuccessHandler;
     private final CustomOAuth2AuthenticationFailureHandler customOAuth2AuthenticationFailureHandler;
     private final CorsConfigurationSource configurationSource;
+    private final CustomAuditEventRepository customAuditEventRepository;
 
     @Bean
     public CsrfTokenRepository csrfTokenRepository() {
@@ -95,6 +98,11 @@ public class SecurityConfig {
                 .addFilterAfter(new CsrfTokenFilter(csrfTokenRepository()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public ApplicationEventPublisher applicationEventPublisher() {
+        return customAuditEventRepository;
     }
 
 }

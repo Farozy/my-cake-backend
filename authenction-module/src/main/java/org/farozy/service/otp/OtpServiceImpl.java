@@ -5,11 +5,17 @@ import com.twilio.type.PhoneNumber;
 import lombok.AllArgsConstructor;
 import org.farozy.config.TwilioConfig;
 import org.farozy.entity.Otp;
+import org.farozy.entity.OtpSendLog;
 import org.farozy.entity.User;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.repository.OtpRepository;
+import org.farozy.repository.OtpSendLogRepository;
 import org.farozy.repository.UserRepository;
+import org.farozy.service.jwt.UserValidationService;
+import org.farozy.utility.EmailUtils;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -25,7 +31,14 @@ public class OtpServiceImpl implements OtpService {
     private final TwilioConfig twilioConfig;
     private final OtpRepository otpRepository;
     private final UserRepository userRepository;
+    private final SpringTemplateEngine templateEngine;
+    private final UserValidationService userValidationService;
+    private final OtpSendLogRepository otpSendLogRepository;
+    private final EmailUtils emailUtils;
     private static final int MAX_ATTEMPTS = 10;
+
+    private record OtpRecord(String otp, LocalDateTime creationTime) {
+    }
 
     @Override
     public String generateOtpForUser(String emailOrWhatsapp) {
@@ -84,13 +97,11 @@ public class OtpServiceImpl implements OtpService {
     public void sendOtp(String otp, String userPhoneNumber) {
         String messageBody = "Your OTP code is: " + otp;
 
-        Message message = Message.creator(
+        Message.creator(
                 new PhoneNumber("whatsapp:" + userPhoneNumber),
                 new PhoneNumber("whatsapp:" + twilioConfig.getFromPhoneNumber()),
                 messageBody
         ).create();
-
-        System.out.println("OTP sent with SID: " + message.getSid());
     }
 
     @Override
@@ -108,7 +119,51 @@ public class OtpServiceImpl implements OtpService {
         return false;
     }
 
-    private record OtpRecord(String otp, LocalDateTime creationTime) {
+    public void sendOtpToEmail(String otp, String email) {
+        try {
+            User user = emailUtils.validationEmail(email);
+
+            Context context = new Context();
+            context.setVariable("otp", otp);
+            context.setVariable("name", user.getFirstName() + " " + user.getLastName());
+
+            String htmlContent = templateEngine.process("emailVerification", context);
+
+            userValidationService.sendEmail(email, htmlContent);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void countSendOtp(String email, String whatsappNumber) {
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
+
+        OtpSendLog log;
+        int optTotal = 3;
+
+        if (email != null && !email.isEmpty()) {
+            log = otpSendLogRepository.findByEmailAndLastSentBetween(email, startOfDay, endOfDay)
+                    .orElse(new OtpSendLog(null, email, 0, LocalDateTime.now()));
+            log.setEmail(email);
+        } else if (whatsappNumber != null && !whatsappNumber.isEmpty()) {
+            log = otpSendLogRepository.findByWhatsappNumberAndLastSentBetween(Integer.valueOf(whatsappNumber), startOfDay, endOfDay)
+                    .orElse(new OtpSendLog(whatsappNumber, null, 0, LocalDateTime.now()));
+            log.setWhatsappNumber(Integer.valueOf(whatsappNumber));
+        } else {
+            throw new IllegalArgumentException("Email atau WhatsApp number harus diberikan");
+        }
+
+        if (log.getOtpCount() >= optTotal) {
+            throw new RuntimeException("Anda telah mencapai batas maksimum pengiriman OTP untuk hari ini");
+        }
+
+        log.setOtpCount(log.getOtpCount() + 1);
+        log.setLastSent(LocalDateTime.now());
+        otpSendLogRepository.save(log);
     }
 
 }
