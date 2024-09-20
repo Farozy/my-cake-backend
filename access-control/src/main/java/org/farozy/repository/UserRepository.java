@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByWhatsappNumber(String phone);
 
+    Optional<User> findByEmailOrWhatsappNumber(String email, String whatsappNumber);
+
 }

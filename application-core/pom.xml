@@ -67,6 +67,11 @@
             <artifactId>user-module</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>category-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -19,7 +19,7 @@ public class OtpSendLog {
     private Long id;
 
     @Column(name = "whatsapp_number", length = 10)
-    private Integer whatsappNumber;
+    private String whatsappNumber;
 
     @Column(name = "email")
     private String email;
@@ -32,16 +32,16 @@ public class OtpSendLog {
 
     public OtpSendLog(String email, String whatsappNumber, int otpCount, LocalDateTime lastSent) {
         this.email = email;
-        this.whatsappNumber = parseWhatsappNumber(whatsappNumber);
+        this.whatsappNumber = whatsappNumber;
         this.otpCount = otpCount;
         this.lastSent = lastSent;
     }
 
     public OtpSendLog() {}
 
-    private Integer parseWhatsappNumber(String whatsappNumber) {
+    private String parseWhatsappNumber(String whatsappNumber) {
         try {
-            return whatsappNumber != null ? Integer.valueOf(whatsappNumber) : null;
+            return whatsappNumber;
         } catch (NumberFormatException e) {
             return null;
         }

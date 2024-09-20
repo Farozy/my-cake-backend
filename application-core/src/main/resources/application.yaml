@@ -83,6 +83,6 @@ jwt:
   expirationMS: 86400000
 
 twilio:
-  account_sid: ACfe28b68aca97b47245a2cf7c8ccb7b8a
-  auth_token: d07449be2a174c5f95122bdfc4c198bd
+  account_sid: ACe2b36812ec7f00efb8fefafba179e6ab
+  auth_token: 0dc81755375f5385f0a0e45440f16b6b
   phone_number: +6285777715400

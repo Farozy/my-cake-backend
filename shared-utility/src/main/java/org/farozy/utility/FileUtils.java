@@ -16,8 +16,6 @@ public class FileUtils {
 
         if (Files.exists(filePath)) {
             Files.delete(filePath);
-        } else {
-            throw new IOException("File not found: " + filePath);
         }
     }
 

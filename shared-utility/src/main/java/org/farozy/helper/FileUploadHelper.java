@@ -3,6 +3,10 @@ package org.farozy.helper;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -33,7 +37,20 @@ public class FileUploadHelper {
         try {
             String fileImageName = generateRandomFileName(file);
             Path filePath = resultsrcPath.resolve(fileImageName);
-            Files.copy(file.getInputStream(), filePath);
+
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "webp", baos);
+            byte[] webpData = baos.toByteArray();
+
+            try (FileOutputStream fos = new FileOutputStream(String.valueOf(filePath))) {
+                fos.write(webpData);
+            }
+
+
+
+
+//            Files.copy(file.getInputStream(), filePath);
 
             return fileImageName;
         } catch (IOException ex) {
@@ -83,9 +100,8 @@ public class FileUploadHelper {
         String originalFilename = file.getOriginalFilename();
         assert originalFilename != null;
 //        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String randomUUID = UUID.randomUUID().toString();
-
-        return randomUUID + ".webp";
+        String generateRandomFileName = UUID.randomUUID().toString();
+        return generateRandomFileName + ".webp";
     }
 
 }

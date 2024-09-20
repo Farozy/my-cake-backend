@@ -1,6 +1,5 @@
 package org.farozy.service.auth;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.RegistrationDto;
 import org.farozy.entity.Otp;
@@ -12,10 +11,7 @@ import org.farozy.exception.ResourceAlreadyExistsException;
 import org.farozy.repository.OtpRepository;
 import org.farozy.repository.RegistrationRepository;
 import org.farozy.repository.UserRepository;
-import org.farozy.security.CustomAuditEventHandler;
-import org.farozy.security.CustomAuditEventRepository;
 import org.farozy.service.otp.OtpService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +26,17 @@ public class RegistrationUserService {
     private final RegistrationRepository registrationRepository;
     private final OtpService otpService;
     private final OtpRepository otpRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public User registerUser(RegistrationDto request) {
         try {
-            String emailOrWhatappNumber = request.getEmail() != null ? request.getEmail() : request.getWhatsAppNumber();
+            String email = request.getEmail();
+            String whatsappNumber = request.getWhatsAppNumber();
 
-            userRepository.findByEmail(emailOrWhatappNumber)
+            userRepository.findByEmailOrWhatsappNumber(email, whatsappNumber)
                     .ifPresent(user -> {
                         throw new ResourceAlreadyExistsException(
-                                "User with email or whatsapp already exists"
+                                "User with email or WhatsApp number already exists"
                         );
                     });
 
@@ -54,11 +50,13 @@ public class RegistrationUserService {
 
             saveOtp(newUser, generateOtp);
 
-            otpService.sendOtpToEmail(generateOtp, newUser.getEmail());
-
-            otpService.countSendOtp(emailOrWhatsapp, emailOrWhatsapp);
-
-            eventPublisher.publishEvent(new CustomAuditEventHandler(this, newUser));
+            if (email != null) {
+                otpService.sendOtpToEmail(generateOtp, email);
+                otpService.countSendOtp(email, null);
+            } else {
+                otpService.sendOtptoWhatsapp(generateOtp, whatsappNumber);
+                otpService.countSendOtp(null, whatsappNumber);
+            }
 
             return newUser;
         } catch (ResourceAlreadyExistsException e) {

@@ -29,7 +29,7 @@ public class OtpController {
         } else if (request.getWhatsAppNumber() != null && !request.getWhatsAppNumber().isEmpty()) {
             otp = String.valueOf(otpService.generateOtpForUser(request.getWhatsAppNumber()));
             otpService.countSendOtp(null, request.getWhatsAppNumber());
-            otpService.sendOtp(otp, request.getWhatsAppNumber());
+            otpService.sendOtptoWhatsapp(otp, request.getWhatsAppNumber());
 
             return ResponseHelper.buildResponseToken(HttpStatus.OK, "OTP sent to WhatsApp number");
         } else {
