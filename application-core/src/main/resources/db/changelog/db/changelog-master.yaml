@@ -14,6 +14,8 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/db/create-users-table.yaml
   - include:
+      file: classpath:db/changelog/db/add-field_location_user.yaml
+  - include:
       file: classpath:db/changelog/db/create-user_roles-table.yaml
   - include:
       file: classpath:db/changelog/db/create-registrations-table.yaml
@@ -27,3 +29,7 @@ databaseChangeLog:
       file: classpath:db/changelog/db/create-otp_send_logs-table.yaml
   - include:
       file: classpath:db/changelog/db/create-categories-table.yaml
+  - include:
+      file: classpath:db/changelog/db/create-stores-table.yaml
+  - include:
+      file: classpath:db/changelog/db/add-field-image-stores-table.yaml

@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: latitude
+                  type: decimal(9, 6)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: longitude
+                  type: decimal(9, 6)
+                  constraints:
+                    nullable: true
+
