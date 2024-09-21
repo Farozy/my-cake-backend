@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: farozy
+      changes:
+        - addColumn:
+            tableName: stores
+            columns:
+              - column:
+                  name: image
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

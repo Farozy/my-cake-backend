@@ -33,6 +33,7 @@
         <module>shared-security</module>
         <module>authenction-module</module>
         <module>category-module</module>
+        <module>store-module</module>
     </modules>
     <scm>
         <connection/>
