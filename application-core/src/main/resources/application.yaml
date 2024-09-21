@@ -78,11 +78,4 @@ spring:
             - "{base-url}://oauth2/redirect"
             - "{base-url}://oauth2/redirect"
 
-jwt:
-  secret: 7cpJAOPn6u/6JjyaGVIHKVnuu4MPLttesogH9zf6qmcDvVXwMbYIapoEaPGx3FedO/8RqbsKkXsv8fOSE72BZg==
-  expirationMS: 86400000
 
-twilio:
-  account_sid: ACe2b36812ec7f00efb8fefafba179e6ab
-  auth_token: 0dc81755375f5385f0a0e45440f16b6b
-  phone_number: +6285777715400
