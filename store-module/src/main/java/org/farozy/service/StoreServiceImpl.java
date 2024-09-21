@@ -106,6 +106,8 @@ public class StoreServiceImpl implements StoreService {
         store.setName(request.getName());
         store.setDescription(request.getDescription());
         store.setAddress(request.getAddress());
+        store.setOpeningTime(request.getOpeningTime());
+        store.setClosingTime(request.getClosingTime());
 
         store.setLatitude(request.getLatitude() != null ? request.getLatitude() : store.getLatitude());
         store.setLongitude(request.getLongitude() != null ? request.getLongitude() : store.getLongitude());

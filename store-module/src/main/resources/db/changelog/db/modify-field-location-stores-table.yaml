@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: farozy
+      changes:
+        - dropNotNullConstraint:
+            tableName: stores
+            columnName: latitude
+
+        - dropNotNullConstraint:
+            tableName: stores
+            columnName: longitude
