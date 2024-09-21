@@ -1,15 +1,20 @@
 package org.farozy.service.otp;
 
 import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-import lombok.AllArgsConstructor;
-import org.farozy.config.TwilioConfig;
+import lombok.RequiredArgsConstructor;
 import org.farozy.entity.Otp;
+import org.farozy.entity.OtpSendLog;
 import org.farozy.entity.User;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.repository.OtpRepository;
+import org.farozy.repository.OtpSendLogRepository;
 import org.farozy.repository.UserRepository;
+import org.farozy.service.jwt.UserValidationService;
+import org.farozy.utility.EmailUtils;
+import org.farozy.utility.TwilioProperties;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -17,15 +22,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.twilio.Twilio;
+
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OtpServiceImpl implements OtpService {
 
     private final Map<String, OtpRecord> otpStorage = new HashMap<>();
-    private final TwilioConfig twilioConfig;
     private final OtpRepository otpRepository;
     private final UserRepository userRepository;
+    private final SpringTemplateEngine templateEngine;
+    private final UserValidationService userValidationService;
+    private final OtpSendLogRepository otpSendLogRepository;
+    private final EmailUtils emailUtils;
     private static final int MAX_ATTEMPTS = 10;
+    private final TwilioProperties twilioProperties;
+
+    private record OtpRecord(String otp, LocalDateTime creationTime) {
+    }
 
     @Override
     public String generateOtpForUser(String emailOrWhatsapp) {
@@ -65,32 +79,12 @@ public class OtpServiceImpl implements OtpService {
             throw new RuntimeException("Unable to generate a unique OTP.");
         }
 
-        Otp otpEntity = new Otp();
-        otpEntity.setUser(user);
-        otpEntity.setOtpCode(Integer.valueOf(otp));
-        otpEntity.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-
-        otpRepository.save(otpEntity);
-
         return otp;
     }
 
     private String generateOtp() {
         int otpNumber = ThreadLocalRandom.current().nextInt(0, 1000000);
         return String.format("%06d", otpNumber);
-    }
-
-    @Override
-    public void sendOtp(String otp, String userPhoneNumber) {
-        String messageBody = "Your OTP code is: " + otp;
-
-        Message message = Message.creator(
-                new PhoneNumber("whatsapp:" + userPhoneNumber),
-                new PhoneNumber("whatsapp:" + twilioConfig.getFromPhoneNumber()),
-                messageBody
-        ).create();
-
-        System.out.println("OTP sent with SID: " + message.getSid());
     }
 
     @Override
@@ -108,7 +102,61 @@ public class OtpServiceImpl implements OtpService {
         return false;
     }
 
-    private record OtpRecord(String otp, LocalDateTime creationTime) {
+    public void sendOtpToEmail(String otp, String email) {
+        try {
+            User user = emailUtils.validationEmail(email);
+
+            Context context = new Context();
+            context.setVariable("otp", otp);
+            context.setVariable("name", user.getFirstName() + " " + user.getLastName());
+
+            String htmlContent = templateEngine.process("otpVerification", context);
+
+            userValidationService.sendEmail(email, htmlContent);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
+    public void sendOtptoWhatsapp(String otp, String whatsappNumber) {
+        Twilio.init(twilioProperties.getAccountSid(), twilioProperties.getAuthToken());
+        Message message = Message.creator(
+                new com.twilio.type.PhoneNumber("whatsapp:+6281233663553"),
+                new com.twilio.type.PhoneNumber("whatsapp:+14155238886"),
+                "OTP " + otp
+        ).create();
+
+        System.out.println(message.getSid());
+    }
+
+    @Override
+    public void countSendOtp(String email, String whatsappNumber) {
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
+
+        OtpSendLog log;
+        int optTotal = 3;
+
+        if (email != null && !email.isEmpty()) {
+            log = otpSendLogRepository.findByEmailAndLastSentBetween(email, startOfDay, endOfDay)
+                    .orElse(new OtpSendLog(email, null, 0, LocalDateTime.now()));
+            log.setEmail(email);
+        } else if (whatsappNumber != null && !whatsappNumber.isEmpty()) {
+            log = otpSendLogRepository.findByWhatsappNumberAndLastSentBetween(whatsappNumber, startOfDay, endOfDay)
+                    .orElse(new OtpSendLog(null, whatsappNumber, 0, LocalDateTime.now()));
+            log.setWhatsappNumber(whatsappNumber);
+        } else {
+            throw new IllegalArgumentException("Email atau WhatsApp number harus diberikan");
+        }
+
+        if (log.getOtpCount() >= optTotal) {
+            throw new RuntimeException("Anda telah mencapai batas maksimum pengiriman OTP untuk hari ini");
+        }
+
+        log.setOtpCount(log.getOtpCount() + 1);
+        log.setLastSent(LocalDateTime.now());
+        otpSendLogRepository.save(log);
+    }
 }

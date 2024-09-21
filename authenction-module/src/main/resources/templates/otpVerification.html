@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Verifikasi Akun Anda</title>
-    <style media="all">
+    <style media="all" type="text/css">
         body {
             font-family: Helvetica, sans-serif;
             font-size: 16px;
@@ -40,6 +40,18 @@
             padding: 0;
         }
 
+        .main {
+            background: #ffffff;
+            border: 1px solid #eaebed;
+            border-radius: 16px;
+            width: 100%;
+        }
+
+        .wrapper {
+            box-sizing: border-box;
+            padding: 24px;
+        }
+
         .footer {
             text-align: center;
             width: 100%;
@@ -56,7 +68,8 @@
 
         p {
             font-size: 16px;
-            margin: 0 0 16px;
+            margin: 0;
+            margin-bottom: 16px;
         }
 
         a {
@@ -75,25 +88,34 @@
             margin-bottom: 16px;
             display: inline-block;
         }
+
+        .preheader {
+            color: transparent;
+            display: none;
+            height: 0;
+            max-height: 0;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            visibility: hidden;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="content">
-        <p>Hai, <small th:if="${name != null}" th:text="${name}"></small></p>
+        <p>Hai</p>
         <p>Silahkan masukkan Kode OTP anda:</p>
-        <div class="otp-code" style="letter-spacing: 0.5em; padding-left: 12px; padding-right: 0">
-            <a th:href="${url}">Verifikasi Token Anda</a>
-        </div>
+        <div class="otp-code" style="letter-spacing: 0.5em; padding-left: 12px; padding-right: 0" th:text="${otp}"></div>
         <p>
-            Perlu diperhatikan, token ini hanya berlaku untuk jangka waktu tertentu.
+            Perlu diperhatikan, kode OTP ini hanya berlaku untuk jangka waktu tertentu.
         </p>
         <p>
-            Jika Anda tidak memasukkan token sebelum waktu habis, Anda harus mengajukan
-            permintaan token baru untuk melanjutkan.
+            Jika Anda tidak memasukkan kode OTP sebelum waktu habis, Anda harus mengajukan
+            permintaan OTP baru untuk melanjutkan.
         </p>
         <p>
-            Demi keamanan akun Anda, jangan berikan token ini kepada siapapun.
+            Demi keamanan akun Anda, jangan berikan kode OTP ini kepada siapapun.
         </p>
         <div class="footer">
             <p>Kelurahan Sumur Licin, Desa Kedawang, Kec. Nguling, Kab. Pasuruan</p>

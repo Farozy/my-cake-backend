@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.farozy.entity.User;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.utility.BaseUrlUtils;
+import org.farozy.utility.EmailUtils;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -15,10 +16,11 @@ public class JwtEmailService {
     private final BaseUrlUtils baseUrlUtil;
     private final SpringTemplateEngine templateEngine;
     private final UserValidationService userValidationService;
+    private final EmailUtils emailUtils;
 
     public void sendTokenToEmail(String email, String token) {
         try {
-            User user = userValidationService.validateUser(email);
+            User user = emailUtils.validationEmail(email);
 
             String htmlContent = generateVerificationEmailContent(token, user);
 
@@ -26,7 +28,7 @@ public class JwtEmailService {
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while sending token: " + e.getMessage());
+            throw new RuntimeException("Error occurred while validating email: " + e.getMessage());
         }
     }
 

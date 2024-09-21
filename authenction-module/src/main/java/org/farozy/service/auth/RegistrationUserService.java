@@ -11,8 +11,6 @@ import org.farozy.exception.ResourceAlreadyExistsException;
 import org.farozy.repository.OtpRepository;
 import org.farozy.repository.RegistrationRepository;
 import org.farozy.repository.UserRepository;
-import org.farozy.service.jwt.JwtEmailService;
-import org.farozy.service.jwt.JwtOtpService;
 import org.farozy.service.otp.OtpService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,25 +24,39 @@ public class RegistrationUserService {
 
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
-    private final JwtEmailService jwtEmailService;
-    private final JwtOtpService jwtOtpService;
     private final OtpService otpService;
     private final OtpRepository otpRepository;
 
     @Transactional
     public User registerUser(RegistrationDto request) {
         try {
+            String email = request.getEmail();
+            String whatsappNumber = request.getWhatsAppNumber();
+
+            userRepository.findByEmailOrWhatsappNumber(email, whatsappNumber)
+                    .ifPresent(user -> {
+                        throw new ResourceAlreadyExistsException(
+                                "User with email or WhatsApp number already exists"
+                        );
+                    });
+
             User newUser = saveNewUser(request);
 
             saveRegistration(newUser);
 
-            String emailOrWhatsapp = request.getEmail() != null ? request.getEmail() : request.getWhatsAppNumber();
+            String emailOrWhatsapp = newUser.getEmail() != null ? newUser.getEmail() : newUser.getWhatsappNumber();
 
             String generateOtp = otpService.generateOtpForUser(emailOrWhatsapp);
 
             saveOtp(newUser, generateOtp);
 
-            jwtOtpService.sendOtpToEmail(newUser.getEmail(), generateOtp);
+            if (email != null) {
+                otpService.sendOtpToEmail(generateOtp, email);
+                otpService.countSendOtp(email, null);
+            } else {
+                otpService.sendOtptoWhatsapp(generateOtp, whatsappNumber);
+                otpService.countSendOtp(null, whatsappNumber);
+            }
 
             return newUser;
         } catch (ResourceAlreadyExistsException e) {

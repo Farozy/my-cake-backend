@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'SUPER_ADMIN')"
+              - column:
+                  name: permission_id
+                  valueComputed: "(SELECT id FROM permissions WHERE name = 'USER_READ')"
+      rollback:
+        - delete:
+            tableName: role_permissions
+            where: "role_id = (SELECT id FROM roles WHERE name = 'SUPER_ADMIN') AND permission_id = (SELECT id FROM permissions WHERE name = 'USER_READ')"
+
+  - changeSet:
+      id: 2
+      author: farozy
+      changes:
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'SUPER_ADMIN')"
+              - column:
+                  name: permission_id
+                  valueComputed: "(SELECT id FROM permissions WHERE name = 'USER_CREATE')"
+      rollback:
+        - delete:
+            tableName: role_permissions
+            where: "role_id = (SELECT id FROM roles WHERE name = 'SUPER_ADMIN') AND permission_id = (SELECT id FROM permissions WHERE name = 'USER_CREATE')"
+
+  - changeSet:
+      id: 3
+      author: farozy
+      changes:
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'SUPER_ADMIN')"
+              - column:
+                  name: permission_id
+                  valueComputed: "(SELECT id FROM permissions WHERE name = 'USER_UPDATE')"
+      rollback:
+        - delete:
+            tableName: role_permissions
+            where: "role_id = (SELECT id FROM roles WHERE name = 'SUPER_ADMIN') AND permission_id = (SELECT id FROM permissions WHERE name = 'USER_UPDATE')"
+
+  - changeSet:
+      id: 4
+      author: farozy
+      changes:
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  valueComputed: "(SELECT id FROM roles WHERE name = 'SUPER_ADMIN')"
+              - column:
+                  name: permission_id
+                  valueComputed: "(SELECT id FROM permissions WHERE name = 'USER_DELETE')"
+      rollback:
+        - delete:
+            tableName: role_permissions
+            where: "role_id = (SELECT id FROM roles WHERE name = 'SUPER_ADMIN') AND permission_id = (SELECT id FROM permissions WHERE name = 'USER_DELETE')"

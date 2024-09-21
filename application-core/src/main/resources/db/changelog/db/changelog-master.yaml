@@ -10,18 +10,20 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/db/insert-permissions.yaml
   - include:
+      file: classpath:db/changelog/db/insert-role_permissions.yaml
+  - include:
       file: classpath:db/changelog/db/create-users-table.yaml
   - include:
       file: classpath:db/changelog/db/create-user_roles-table.yaml
   - include:
-      file: classpath:db/changelog/db/insert-user.yaml
-  - include:
       file: classpath:db/changelog/db/create-registrations-table.yaml
   - include:
-      file: classpath:db/changelog/db/create-otps-table.yaml
+      file: classpath:db/changelog/db/insert-user.yaml
   - include:
       file: classpath:db/changelog/db/insert-registration_user.yaml
   - include:
-      file: classpath:db/changelog/db/insert-user_role.yaml
+      file: classpath:db/changelog/db/create-otps-table.yaml
   - include:
-      file: classpath:db/changelog/db/insert-role_permission.yaml
+      file: classpath:db/changelog/db/create-otp_send_logs-table.yaml
+  - include:
+      file: classpath:db/changelog/db/create-categories-table.yaml
