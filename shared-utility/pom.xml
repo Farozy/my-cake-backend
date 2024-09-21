@@ -26,6 +26,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.sejda.imageio</groupId>
+            <artifactId>webp-imageio</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.farozy</groupId>
             <artifactId>shared-exception</artifactId>
             <version>${project.version}</version>

@@ -58,8 +58,8 @@
         <spring-boot-starter-security.version>3.3.2</spring-boot-starter-security.version>
         <spring-boot-starter-mail.version>3.3.3</spring-boot-starter-mail.version>
         <spring-boot-starter-thymeleaf.version>3.3.3</spring-boot-starter-thymeleaf.version>
-        <imageio-webp.version>3.8.0</imageio-webp.version>
         <twilio.version>10.5.0</twilio.version>
+        <webp-imageio.version>0.1.6</webp-imageio.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -148,14 +148,14 @@
                 <version>${spring-boot-starter-thymeleaf.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.twelvemonkeys.imageio</groupId>
-                <artifactId>imageio-webp</artifactId>
-                <version>${imageio-webp.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.twilio.sdk</groupId>
                 <artifactId>twilio</artifactId>
                 <version>${twilio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sejda.imageio</groupId>
+                <artifactId>webp-imageio</artifactId>
+                <version>${webp-imageio.version}</version>
             </dependency>
 
         </dependencies>

@@ -1,61 +1,60 @@
 package org.farozy.helper;
 
-import org.springframework.util.StringUtils;
+import com.luciad.imageio.webp.WebPWriteParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+import java.nio.file.*;
 import java.util.UUID;
 
 public class FileUploadHelper {
 
     public static String processSaveImage(String moduleName, MultipartFile imageFile) {
         try {
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-            return FileUploadHelper.saveFile(moduleName, fileName, imageFile);
+//            String fileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
+            return FileUploadHelper.saveFile(moduleName, imageFile);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save image file: " + e.getMessage(), e);
         }
     }
 
-    private static String saveFile(String moduleName, String fileName, MultipartFile file) throws IOException {
+    private static String saveFile(String moduleName, MultipartFile file) throws IOException {
         Path resultsrcPath = createImageUploadDirectory(moduleName);
 
-        try {
-            String fileImageName = generateRandomFileName(file);
-            Path filePath = resultsrcPath.resolve(fileImageName);
+        String fileImageName = generateRandomFileName(file);
+        Path filePath = resultsrcPath.resolve(fileImageName);
 
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "webp", baos);
-            byte[] webpData = baos.toByteArray();
+        try (InputStream inputStream = file.getInputStream()) {
+            BufferedImage image = ImageIO.read(inputStream);
 
-            try (FileOutputStream fos = new FileOutputStream(String.valueOf(filePath))) {
-                fos.write(webpData);
-            }
+            ImageWriter writer = ImageIO.getImageWritersByMIMEType("image/webp").next();
+            WebPWriteParam writeParam = new WebPWriteParam(writer.getLocale());
+            writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            writeParam.setCompressionType(writeParam.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
+            writeParam.setCompressionQuality(0.8f);
 
+            writer.setOutput(new FileImageOutputStream(filePath.toFile()));
+            writer.write(null, new IIOImage(image, null, null), writeParam);
 
-
-
-//            Files.copy(file.getInputStream(), filePath);
-
-            return fileImageName;
-        } catch (IOException ex) {
-            throw new IOException("Could not store file " + fileName + ". Please try again!", ex);
+            return filePath.getFileName().toString();
+        } catch (Exception e) {
+            System.out.println("Error saving image as WebP: " +  e);
         }
+
+//      Files.copy(file.getInputStream(), filePath);
+
+        return fileImageName;
     }
 
     public static String saveImageLocally(String imageUrl, String imageName) throws MalformedURLException, URISyntaxException {
@@ -101,7 +100,8 @@ public class FileUploadHelper {
         assert originalFilename != null;
 //        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String generateRandomFileName = UUID.randomUUID().toString();
-        return generateRandomFileName + ".webp";
+        String fileExtension = ".webp";
+        return generateRandomFileName + fileExtension;
     }
 
 }
