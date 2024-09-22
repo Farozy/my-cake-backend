@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserUtils userUtils;
+    private static final String addPath = "thumbnails";
 
     @Override
     @Transactional
@@ -96,9 +97,7 @@ public class UserServiceImpl implements UserService {
             User user = userUtils.getUserById(id);
 
             String userImage = user.getImage();
-            if (userImage != null && !userImage.isEmpty()) {
-                FileUtils.deleteFile(userModule, userImage);
-            }
+            if (userImage != null && !userImage.isEmpty()) FileUtils.deleteFile(userModule, userImage, addPath);
 
             userRepository.deleteById(id);
         } catch (ResourceNotFoundException e) {
@@ -144,9 +143,9 @@ public class UserServiceImpl implements UserService {
     private void handleUserImage(Long id, User user, MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             if (id != null && user.getImage() != null) {
-                FileUtils.deleteFile(userModule, user.getImage());
+                FileUtils.deleteFile(userModule, user.getImage(), addPath);
             }
-            String imagePath = FileUploadHelper.processSaveImage(userModule, imageFile);
+            String imagePath = FileUploadHelper.processSaveImage(userModule, imageFile, "thumbnails");
             user.setImage(imagePath);
         }
     }

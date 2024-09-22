@@ -20,17 +20,17 @@ import java.util.UUID;
 
 public class FileUploadHelper {
 
-    public static String processSaveImage(String moduleName, MultipartFile imageFile) {
+    public static String processSaveImage(String moduleName, MultipartFile imageFile, String addPath) {
         try {
 //            String fileName = StringUtils.cleanPath(Objects.requireNonNull(imageFile.getOriginalFilename()));
-            return FileUploadHelper.saveFile(moduleName, imageFile);
+            return FileUploadHelper.saveFile(moduleName, imageFile, addPath);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save image file: " + e.getMessage(), e);
         }
     }
 
-    private static String saveFile(String moduleName, MultipartFile file) throws IOException {
-        Path resultsrcPath = createImageUploadDirectory(moduleName);
+    private static String saveFile(String moduleName, MultipartFile file, String addPath) throws IOException {
+        Path resultsrcPath = createImageUploadDirectory(moduleName, addPath);
 
         String fileImageName = generateRandomFileName(file);
         Path filePath = resultsrcPath.resolve(fileImageName);
@@ -57,8 +57,8 @@ public class FileUploadHelper {
         return fileImageName;
     }
 
-    public static String saveImageLocally(String imageUrl, String imageName) throws MalformedURLException, URISyntaxException {
-        Path resultsrcPath = createImageUploadDirectory("user-module");
+    public static String saveImageLocally(String imageUrl, String imageName, String addPath) throws MalformedURLException, URISyntaxException {
+        Path resultsrcPath = createImageUploadDirectory("user-module", addPath);
 
         Path filePath = resultsrcPath.resolve(imageName);
 
@@ -74,7 +74,7 @@ public class FileUploadHelper {
         return imageName;
     }
 
-    private static Path createImageUploadDirectory(String moduleName) {
+    private static Path createImageUploadDirectory(String moduleName, String addPath) {
         if (moduleName == null || moduleName.trim().isEmpty()) {
             throw new IllegalArgumentException("Module name must not be null or empty");
         }
@@ -84,7 +84,7 @@ public class FileUploadHelper {
 
         Path srcPath = Paths.get(parentDir.toUri())
                 .resolve(moduleName)
-                .resolve("src/main/resources/static/upload/image/");
+                .resolve("src/main/resources/static/upload/image/" + addPath + "/");
 
         try {
             Files.createDirectories(srcPath);
