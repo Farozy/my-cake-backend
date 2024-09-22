@@ -119,7 +119,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String randomUUID = UUID.randomUUID().toString();
         String imageName = randomUUID + ".webp";
-        String imagePath = FileUploadHelper.saveImageLocally(oAuth2UserInfo.getImageUrl(), imageName);
+        String imagePath = FileUploadHelper.saveImageLocally(oAuth2UserInfo.getImageUrl(), imageName, "thumbnails");
 
         user.setImage(imagePath);
 

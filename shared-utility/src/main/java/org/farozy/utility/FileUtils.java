@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class FileUtils {
 
-    public static void deleteFile(String moduleName, String fileName) throws IOException {
-        Path fileDir = getImageUploadDirectoryPath(moduleName);
+    public static void deleteFile(String moduleName, String fileName, String addPath) throws IOException {
+        Path fileDir = getImageUploadDirectoryPath(moduleName, addPath);
         Path filePath = fileDir.resolve(fileName);
 
         if (Files.exists(filePath)) {
@@ -19,13 +19,13 @@ public class FileUtils {
         }
     }
 
-    public static Path getImageUploadDirectoryPath(String moduleName) {
+    public static Path getImageUploadDirectoryPath(String moduleName, String addPath) {
         Path currentDir = Paths.get(System.getProperty("user.dir"));
         Path parentDir = currentDir.getParent();
 
         return Paths.get(parentDir.toUri())
                 .resolve(moduleName)
-                .resolve("src/main/resources/static/upload/image/");
+                .resolve("src/main/resources/static/upload/image/" + addPath + "/");
     }
 
     public static Map<String, Object> getImageDetails(String moduleName, String imageName) throws IOException {

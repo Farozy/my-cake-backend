@@ -23,6 +23,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private static final String storeModule = "store-module";
+    private static final String addPath = "thumbnails";
 
     @Override
     @Transactional
@@ -75,7 +76,7 @@ public class StoreServiceImpl implements StoreService {
         try {
             Store store = getStoreById(id);
 
-            FileUtils.deleteFile(storeModule, store.getImage());
+            FileUtils.deleteFile(storeModule, store.getImage(), addPath);
 
             storeRepository.deleteById(id);
         } catch (ResourceNotFoundException e) {
@@ -95,11 +96,19 @@ public class StoreServiceImpl implements StoreService {
     private Store saveOrUpdateStore(Long id, StoreDto request, MultipartFile imageFile) throws IOException {
         Store store = (id == null) ? new Store() : getStoreById(id);
 
-        if (id != null) FileUtils.deleteFile(storeModule, store.getImage());
+        String newImageStore = null;
+        try {
+            if (id != null) FileUtils.deleteFile(storeModule, store.getImage(), addPath);
 
-        store.setImage(FileUploadHelper.processSaveImage(storeModule, imageFile));
+            newImageStore = FileUploadHelper.processSaveImage(storeModule, imageFile, "thumbnails");
+            store.setImage(newImageStore);
 
-        return saveOrUpdateStoreFromRequest(store, request);
+            return saveOrUpdateStoreFromRequest(store, request);
+        } catch (Exception e) {
+            if (newImageStore != null) FileUtils.deleteFile(storeModule, newImageStore, addPath);
+
+            throw new RuntimeException("Failed to save store and image: " + e.getMessage(), e);
+        }
     }
 
     public Store saveOrUpdateStoreFromRequest(Store store, StoreDto request) {

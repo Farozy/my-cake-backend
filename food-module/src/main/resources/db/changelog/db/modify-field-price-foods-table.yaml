@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - modifyDataType:
+            tableName: foods
+            columnName: price
+            newDataType: BIGINT
+
+      rollback:
+        - modifyDataType:
+            tableName: foods
+            columnName: price
+            newDataType: DECIMAL(10,2)

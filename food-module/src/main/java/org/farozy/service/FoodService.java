@@ -1,6 +1,7 @@
 package org.farozy.service;
 
 import org.farozy.dto.FoodDto;
+import org.farozy.dto.FoodImagesUploadDto;
 import org.farozy.entity.Food;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,5 +18,9 @@ public interface FoodService {
     Food update(Long id, FoodDto request, MultipartFile imageFile);
 
     void delete(Long id);
+
+    void uploadImages(FoodImagesUploadDto request, List<MultipartFile> images);
+
+    void deleteFoodImages(Long id);
 
 }

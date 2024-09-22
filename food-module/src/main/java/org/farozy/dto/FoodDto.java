@@ -22,18 +22,17 @@ public class FoodDto {
     @NotBlank(message = "Name is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private String name;
 
-    @NotBlank(message = "Price is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
+    @NotNull(message = "Price is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private BigDecimal price;
 
     @NotBlank(message = "Description is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private String description;
 
-    @NotBlank(message = "Stock is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
+    @NotNull(message = "Stock is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private Integer stock;
 
-    @NotBlank(message = "Available is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
+    @NotNull(message = "Available is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private Boolean available;
-
 
     @Digits(integer = 5, fraction = 2)
     private BigDecimal discount = BigDecimal.ZERO;
@@ -42,10 +41,10 @@ public class FoodDto {
     @ImageFileSize(groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private MultipartFile image;
 
-    @NotBlank(message = "Category ID is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
+    @NotNull(message = "Category ID is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private Long categoryId;
 
-    @NotBlank(message = "Store ID is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
+    @NotNull(message = "Store ID is required", groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private Long storeId;
 
 }

@@ -37,3 +37,9 @@ databaseChangeLog:
       file: classpath:db/changelog/db/modify-field-location-stores-table.yaml
   - include:
       file: classpath:db/changelog/db/create-foods-table.yaml
+  - include:
+      file: classpath:db/changelog/db/modify-field-description-foods-table.yaml
+  - include:
+      file: classpath:db/changelog/db/modify-field-price-foods-table.yaml
+  - include:
+      file: classpath:db/changelog/db/create-food_images-table.yaml

@@ -23,6 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private static final String categoryModule = "category-module";
+    private static final String addPath = "thumbnails";
 
     @Override
     @Transactional
@@ -73,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             Category category = getCategoryById(id);
 
-            FileUtils.deleteFile(categoryModule, category.getImage());
+            FileUtils.deleteFile(categoryModule, category.getImage(), addPath);
 
             categoryRepository.deleteById(id);
         } catch (ResourceNotFoundException e) {
@@ -97,12 +98,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         String newCategoryImage = null;
         try {
-            newCategoryImage = FileUploadHelper.processSaveImage(categoryModule, imageFile);
+            newCategoryImage = FileUploadHelper.processSaveImage(categoryModule, imageFile, "thumbnails");
             category.setImage(newCategoryImage);
 
             return saveOrUpdateCategoryFromRequest(category, request);
         } catch (Exception e) {
-            if (newCategoryImage != null) FileUtils.deleteFile(categoryModule, newCategoryImage);
+            if (newCategoryImage != null) FileUtils.deleteFile(categoryModule, newCategoryImage, addPath);
 
             throw new RuntimeException("Failed to save category and image: " + e.getMessage(), e);
         }
