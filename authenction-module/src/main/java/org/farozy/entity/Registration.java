@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.farozy.enums.AuthProvider;
 import org.farozy.enums.RegistrationStatus;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -17,7 +18,7 @@ import java.util.Date;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "registrations")
-public class Registration {
+public class Registration implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -77,6 +77,11 @@
             <artifactId>store-module</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>food-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

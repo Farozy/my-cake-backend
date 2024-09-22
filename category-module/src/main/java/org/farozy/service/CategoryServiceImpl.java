@@ -95,11 +95,17 @@ public class CategoryServiceImpl implements CategoryService {
 
         checkCategoryName(id, request.getName());
 
-        if (id != null) FileUtils.deleteFile(categoryModule, category.getImage());
+        String newCategoryImage = null;
+        try {
+            newCategoryImage = FileUploadHelper.processSaveImage(categoryModule, imageFile);
+            category.setImage(newCategoryImage);
 
-        category.setImage(FileUploadHelper.processSaveImage(categoryModule, imageFile));
+            return saveOrUpdateCategoryFromRequest(category, request);
+        } catch (Exception e) {
+            if (newCategoryImage != null) FileUtils.deleteFile(categoryModule, newCategoryImage);
 
-        return saveOrUpdateCategoryFromRequest(category, request);
+            throw new RuntimeException("Failed to save category and image: " + e.getMessage(), e);
+        }
     }
 
     private void checkCategoryName(Long id, String categoryName) {
