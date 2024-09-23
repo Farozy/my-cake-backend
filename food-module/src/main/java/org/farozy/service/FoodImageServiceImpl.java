@@ -3,10 +3,12 @@ package org.farozy.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.FoodImagesUploadDto;
+import org.farozy.entity.Food;
 import org.farozy.entity.FoodImage;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.helper.FileUploadHelper;
 import org.farozy.repository.FoodImageRepository;
+import org.farozy.repository.FoodRepository;
 import org.farozy.utility.FileUtils;
 import org.farozy.validation.annotation.permission.UserPermission;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.List;
 public class FoodImageServiceImpl implements FoodImageService {
 
     private final FoodImageRepository foodImageRepository;
+    private final FoodRepository foodRepository;
     private static final String foodModule = "food-module";
     private static final String detailsPath = "details";
 
@@ -40,7 +43,9 @@ public class FoodImageServiceImpl implements FoodImageService {
     @UserPermission.UserRead
     public List<FoodImage> findByFoodId(Long id) {
         try {
-            List<FoodImage> foodImages = foodImageRepository.findByFoodId(id);
+            Food getFoodById = getFoodById(id);
+
+            List<FoodImage> foodImages = foodImageRepository.findByFoodId(getFoodById);
 
             if (foodImages.isEmpty()) {
                 throw new ResourceNotFoundException("The food image with the specified ID does not exist");
@@ -61,10 +66,15 @@ public class FoodImageServiceImpl implements FoodImageService {
         try {
             getFoodImageById(request.getFoodId());
 
+            Food getFoodById = foodRepository.findById(request.getFoodId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "The food with the specified ID does not exist"
+                    ));
+
             for (MultipartFile image : images) {
                 FoodImage foodImage = new FoodImage();
 
-                foodImage.setFoodId(request.getFoodId());
+                foodImage.setFoodId(getFoodById);
 
                 String newFoodImage = FileUploadHelper.processSaveImage(foodModule, image, detailsPath);
                 foodImage.setImageUrl(newFoodImage);
@@ -100,16 +110,18 @@ public class FoodImageServiceImpl implements FoodImageService {
     @UserPermission.UserRead
     public void delete(Long id) {
         try {
-            FoodImage food = getFoodImageById(id);
+            FoodImage foodImages = getFoodImageById(id);
 
-            List<FoodImage> foodImages = foodImageRepository.findByFoodId(food.getId());
+            Food getFoodById = getFoodById(foodImages.getFoodId().getId());
 
-            for (FoodImage foodImage : foodImages) {
-                String fileName = foodImage.getImageUrl();
+            List<FoodImage> listFoodImages = foodImageRepository.findByFoodId(foodImages.getFoodId());
+
+            for (FoodImage foodImg : listFoodImages) {
+                String fileName = foodImg.getImageUrl();
                 FileUtils.deleteFile(foodModule, fileName, detailsPath);
             }
 
-            foodImageRepository.deleteByFoodId(food.getId());
+            foodImageRepository.deleteByFoodId(getFoodById);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception ex) {
@@ -121,6 +133,13 @@ public class FoodImageServiceImpl implements FoodImageService {
         return foodImageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "The food image with the specified ID does not exist"
+                ));
+    }
+
+    private Food getFoodById(Long id) {
+        return foodRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "The food with the specified ID does not exist"
                 ));
     }
 
