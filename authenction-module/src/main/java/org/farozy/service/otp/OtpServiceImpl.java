@@ -1,7 +1,9 @@
 package org.farozy.service.otp;
 
 import com.twilio.rest.api.v2010.account.Message;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.farozy.dto.OtpDto;
 import org.farozy.entity.Otp;
 import org.farozy.entity.OtpSendLog;
 import org.farozy.entity.User;
@@ -12,6 +14,7 @@ import org.farozy.repository.UserRepository;
 import org.farozy.service.jwt.UserValidationService;
 import org.farozy.utility.EmailUtils;
 import org.farozy.utility.TwilioProperties;
+import org.farozy.validation.annotation.permission.UserPermission;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -42,6 +45,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
+    @Transactional
     public String generateOtpForUser(String emailOrWhatsapp) {
         try {
             User user = userRepository.findByEmail(emailOrWhatsapp)
@@ -88,6 +92,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
+    @Transactional
     public boolean validateOtp(String identifier, String otp) {
         OtpRecord record = otpStorage.get(identifier);
 
@@ -102,6 +107,8 @@ public class OtpServiceImpl implements OtpService {
         return false;
     }
 
+    @Override
+    @Transactional
     public void sendOtpToEmail(String otp, String email) {
         try {
             User user = emailUtils.validationEmail(email);
@@ -120,6 +127,7 @@ public class OtpServiceImpl implements OtpService {
         }
     }
 
+    @Transactional
     public void sendOtptoWhatsapp(String otp, String whatsappNumber) {
         Twilio.init(twilioProperties.getAccountSid(), twilioProperties.getAuthToken());
         Message message = Message.creator(
@@ -132,6 +140,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     @Override
+    @Transactional
     public void countSendOtp(String email, String whatsappNumber) {
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
@@ -158,5 +167,33 @@ public class OtpServiceImpl implements OtpService {
         log.setOtpCount(log.getOtpCount() + 1);
         log.setLastSent(LocalDateTime.now());
         otpSendLogRepository.save(log);
+    }
+
+    @Override
+    @Transactional
+    public Boolean verifyOtp(OtpDto request) {
+        try {
+            boolean exists = otpRepository.existsByOtpCode(Integer.valueOf(request.getOtp()));
+
+            if (!exists) {
+                throw new IllegalArgumentException("Invalid OTP code");
+            }
+
+            Otp otp = otpRepository.findByOtpCode(Integer.valueOf(request.getOtp()))
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid OTP code."));
+
+            if (otp.getExpiresAt().isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("OTP has expired.");
+            }
+
+            otp.setUsed(true);
+            otpRepository.save(otp);
+
+            return true;
+        }catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

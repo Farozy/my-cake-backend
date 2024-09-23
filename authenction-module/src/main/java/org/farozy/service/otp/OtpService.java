@@ -1,5 +1,7 @@
 package org.farozy.service.otp;
 
+import org.farozy.dto.OtpDto;
+
 public interface OtpService {
 
     String generateOtpForUser(String emailOrWhatsapp);
@@ -11,5 +13,7 @@ public interface OtpService {
     void sendOtptoWhatsapp(String otp, String whatsappNumber);
 
     void countSendOtp(String email, String whatsappNumber);
+
+    Boolean verifyOtp(OtpDto request);
 
 }

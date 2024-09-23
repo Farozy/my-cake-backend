@@ -2,6 +2,7 @@ package org.farozy.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.farozy.dto.OtpDto;
 import org.farozy.dto.RegistrationDto;
 import org.farozy.helper.ResponseHelper;
 import org.farozy.payload.ApiResponse;
@@ -36,6 +37,23 @@ public class OtpController {
             return ResponseHelper.buildResponseToken(
                     HttpStatus.BAD_REQUEST,
                     "Either email or whatsAppNumber must be provided"
+            );
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<ApiResponse<Object>> verifyOtp(@RequestBody @Valid OtpDto request) {
+        boolean isValidOtp = otpService.verifyOtp(request);
+
+        if (isValidOtp) {
+            return ResponseHelper.buildResponseToken(
+                    HttpStatus.OK,
+                    "OTP is valid"
+            );
+        } else {
+            return ResponseHelper.buildResponseToken(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid OTP"
             );
         }
     }
