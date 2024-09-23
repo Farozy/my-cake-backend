@@ -37,7 +37,6 @@ public class FoodDto {
     @Digits(integer = 5, fraction = 2)
     private BigDecimal discount = BigDecimal.ZERO;
 
-    @NotNull(message = "Image is required", groups = FoodDto.CreateGroup.class)
     @ImageFileSize(groups = {FoodDto.CreateGroup.class, FoodDto.UpdateGroup.class})
     private MultipartFile image;
 

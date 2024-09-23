@@ -64,22 +64,30 @@ public class FoodImageServiceImpl implements FoodImageService {
     @UserPermission.UserRead
     public void uploadImages(FoodImagesUploadDto request, List<MultipartFile> images) {
         try {
-            getFoodImageById(request.getFoodId());
-
             Food getFoodById = foodRepository.findById(request.getFoodId())
                     .orElseThrow(() -> new ResourceNotFoundException(
                             "The food with the specified ID does not exist"
                     ));
 
+            List<FoodImage> listFoodImages = foodImageRepository.findByFoodId(getFoodById);
+
+            int totalImagesAfterUpload = listFoodImages.size() + images.size();
+
+            if (totalImagesAfterUpload > 5) {
+                throw new RuntimeException("Cannot upload images; maximum of 5 images reached");
+            }
+
             for (MultipartFile image : images) {
                 FoodImage foodImage = new FoodImage();
 
-                foodImage.setFoodId(getFoodById);
-
                 String newFoodImage = FileUploadHelper.processSaveImage(foodModule, image, detailsPath);
+
+                foodImage.setFoodId(getFoodById);
                 foodImage.setImageUrl(newFoodImage);
                 foodImageRepository.save(foodImage);
             }
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception ex) {
             throw new RuntimeException("Failed to upload images: " + ex.getMessage(), ex);
         }
@@ -110,11 +118,32 @@ public class FoodImageServiceImpl implements FoodImageService {
     @UserPermission.UserRead
     public void delete(Long id) {
         try {
-            FoodImage foodImages = getFoodImageById(id);
+            FoodImage findFoodImageById = getFoodImageById(id);
 
-            Food getFoodById = getFoodById(foodImages.getFoodId().getId());
+            FileUtils.deleteFile(foodModule, findFoodImageById.getImageUrl(), detailsPath);
 
-            List<FoodImage> listFoodImages = foodImageRepository.findByFoodId(foodImages.getFoodId());
+            foodImageRepository.deleteById(id);
+        } catch (ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        } catch (Exception ex) {
+            throw new RuntimeException("Error occurred while deleting by id " + ex.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    @UserPermission.UserRead
+    public void deleteByFoodId(Long id) {
+        try {
+            foodRepository.findById(id);
+
+            Food getFoodById = getFoodById(id);
+
+            List<FoodImage> listFoodImages = foodImageRepository.findByFoodId(getFoodById);
+
+            if (listFoodImages.isEmpty()) {
+                throw new ResourceNotFoundException("Food images by food ID not found");
+            }
 
             for (FoodImage foodImg : listFoodImages) {
                 String fileName = foodImg.getImageUrl();
