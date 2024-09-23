@@ -7,6 +7,7 @@ import org.farozy.entity.Food;
 import org.farozy.entity.FoodImage;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.helper.FileUploadHelper;
+import org.farozy.helper.FileUploadProperties;
 import org.farozy.repository.FoodImageRepository;
 import org.farozy.repository.FoodRepository;
 import org.farozy.utility.FileUtils;
@@ -24,6 +25,7 @@ public class FoodImageServiceImpl implements FoodImageService {
     private final FoodRepository foodRepository;
     private static final String foodModule = "food-module";
     private static final String detailsPath = "details";
+    private final FileUploadProperties fileUploadProperties;
 
     @Override
     @Transactional
@@ -73,7 +75,7 @@ public class FoodImageServiceImpl implements FoodImageService {
 
             int totalImagesAfterUpload = listFoodImages.size() + images.size();
 
-            if (totalImagesAfterUpload > 5) {
+            if (totalImagesAfterUpload > fileUploadProperties.getMaxFoodImage()) {
                 throw new RuntimeException("Cannot upload images; maximum of 5 images reached");
             }
 
