@@ -14,7 +14,6 @@ import org.farozy.repository.UserRepository;
 import org.farozy.service.jwt.UserValidationService;
 import org.farozy.utility.EmailUtils;
 import org.farozy.utility.TwilioProperties;
-import org.farozy.validation.annotation.permission.UserPermission;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -23,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.twilio.Twilio;
@@ -173,25 +173,30 @@ public class OtpServiceImpl implements OtpService {
     @Transactional
     public Boolean verifyOtp(OtpDto request) {
         try {
-            boolean exists = otpRepository.existsByOtpCode(Integer.valueOf(request.getOtp()));
+            boolean existsOtp = otpRepository.existsByOtpCode(Integer.valueOf(request.getOtp()));
 
-            if (!exists) {
-                throw new IllegalArgumentException("Invalid OTP code");
-            }
+            if (!existsOtp) throw new RuntimeException("Invalid OTP code");
 
             Otp otp = otpRepository.findByOtpCode(Integer.valueOf(request.getOtp()))
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid OTP code."));
+                    .orElseThrow(() -> new RuntimeException("Invalid OTP code."));
 
             if (otp.getExpiresAt().isBefore(LocalDateTime.now())) {
-                throw new IllegalArgumentException("OTP has expired.");
+                throw new RuntimeException("The OTP has expired. Please request a new OTP.");
+            }
+
+            Optional<User> user = userRepository.findByEmail(request.getEmailOrWhatsapp())
+                    .or(() -> userRepository.findByWhatsappNumber(request.getEmailOrWhatsapp()));
+
+            if (user.isEmpty()) {
+                throw new ResourceNotFoundException("User not found");
             }
 
             otp.setUsed(true);
             otpRepository.save(otp);
 
             return true;
-        }catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
+        } catch (ResourceNotFoundException ex) {
+            throw new ResourceNotFoundException(ex.getMessage());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

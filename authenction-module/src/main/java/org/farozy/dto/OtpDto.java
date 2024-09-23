@@ -1,6 +1,5 @@
 package org.farozy.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -16,8 +15,10 @@ public class OtpDto {
     private String otp;
 
     @NotNull(message = "Email or WhatsApp is required")
-    @Email(message = "Invalid email")
-    @Pattern(regexp = "^(\\+62[0-9]{8,13}|0[0-9]{8,13})$", message = "Invalid whatsapp number format")
+    @Pattern(
+            regexp = "^(\\+62[0-9]{8,13}|0[0-9]{8,13}|[\\w.+\\-]+@\\w+\\.\\w+)$",
+            message = "Invalid format for email or WhatsApp number"
+    )
     private String emailOrWhatsapp;
 
 }
