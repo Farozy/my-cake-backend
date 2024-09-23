@@ -43,6 +43,10 @@ public class FoodController {
             @Validated(FoodDto.CreateGroup.class) @ModelAttribute FoodDto request,
             @RequestParam("image") MultipartFile multipartFile
     ) {
+        if (multipartFile.isEmpty()) {
+            return ResponseHelper.buildResponseData(HttpStatus.BAD_REQUEST, "Image is required", null);
+        }
+
         Food createdFood = foodService.save(request, multipartFile);
         String message = "Food created successfully";
 

@@ -15,7 +15,6 @@ public class FoodImagesUploadDto {
     @NotNull(message = "Food ID is required")
     private Long foodId;
 
-    @NotNull(message = "Image is required")
     @ImageFileSize()
     private MultipartFile image;
 

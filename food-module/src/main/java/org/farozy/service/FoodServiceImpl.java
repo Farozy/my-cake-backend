@@ -90,8 +90,6 @@ public class FoodServiceImpl implements FoodService {
         }
     }
 
-
-
     private Food getFoodById(Long id) {
         return foodRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(

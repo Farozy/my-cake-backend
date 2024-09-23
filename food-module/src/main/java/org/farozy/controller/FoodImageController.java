@@ -28,7 +28,7 @@ public class FoodImageController {
         return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, getFoodImageById);
     }
 
-    @GetMapping("/foodId/{id}")
+    @GetMapping("/food-id/{id}")
     public ResponseEntity<ApiResponse<List<FoodImage>>> getByFoodId(@PathVariable Long id) {
         List<FoodImage> getImageByFoodId = foodImageService.findByFoodId(id);
         String successMessage = "Get food image by food ID successfully";
@@ -36,20 +36,26 @@ public class FoodImageController {
         return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, getImageByFoodId);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<ApiResponse<FoodImage>> uploadImages(
             FoodImagesUploadDto request, @RequestParam("images") List<MultipartFile> images
     ) {
-        foodImageService.uploadImages(request, images);
-        String successMessage = "Upload images successfully";
-
         if (images.size() > 5) {
             return ResponseHelper.buildResponseData(
                     HttpStatus.BAD_REQUEST, "Max. 5 file image for upload", null
             );
         }
 
+        for (MultipartFile image : images) {
+            if (image.isEmpty()) {
+                return ResponseHelper.buildResponseData(
+                        HttpStatus.BAD_REQUEST, "One of the file images is empty", null
+                );
+            }
+        }
+
         foodImageService.uploadImages(request, images);
+        String successMessage = "Upload images successfully";
 
         return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
     }
@@ -68,6 +74,15 @@ public class FoodImageController {
     public ResponseEntity<ApiResponse<FoodImage>> destroy(@PathVariable Long id) {
         foodImageService.delete(id);
         String successMessage = "Food Images deleted successfully";
+
+        return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
+    }
+
+    @DeleteMapping("/food-id/{id}")
+    public ResponseEntity<ApiResponse<FoodImage>> destroyByFoodId(@PathVariable Long id) {
+        foodImageService.deleteByFoodId(id);
+
+        String successMessage = "Food images by food ID deleted successfully";
 
         return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
     }

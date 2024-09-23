@@ -18,4 +18,6 @@ public interface FoodImageService {
 
     void delete(Long id);
 
+    void deleteByFoodId(Long id);
+
 }
