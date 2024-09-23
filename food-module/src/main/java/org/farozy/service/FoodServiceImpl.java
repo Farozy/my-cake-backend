@@ -3,10 +3,8 @@ package org.farozy.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.FoodDto;
-import org.farozy.dto.FoodImagesUploadDto;
 import org.farozy.entity.Category;
 import org.farozy.entity.Food;
-import org.farozy.entity.FoodImage;
 import org.farozy.entity.Store;
 import org.farozy.exception.ResourceNotFoundException;
 import org.farozy.helper.FileUploadHelper;
@@ -30,11 +28,10 @@ public class FoodServiceImpl implements FoodService {
 
     private static final String foodModule = "food-module";
     private final FoodRepository foodRepository;
-    private final FoodImageRepository foodImageRepository;
     private final CategoryRepository categoryRepository;
     private final StoreRepository storeRepository;
     private static final String addPath = "thumbnails";
-    private static final String detailsPath = "details";
+
 
     @Override
     @Transactional
@@ -93,46 +90,7 @@ public class FoodServiceImpl implements FoodService {
         }
     }
 
-    @Override
-    @Transactional
-    @UserPermission.UserRead
-    public void uploadImages(FoodImagesUploadDto request, List<MultipartFile> images) {
-        try {
-            deleteFoodImages(request.getFoodId());
 
-            for (MultipartFile image : images) {
-                FoodImage foodImage = new FoodImage();
-
-                foodImage.setFoodId(request.getFoodId());
-
-                FileUploadHelper.processSaveImage(foodModule, image, detailsPath);
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to upload images: " + ex.getMessage(), ex);
-        }
-    }
-
-    @Override
-    @Transactional
-    @UserPermission.UserRead
-    public void deleteFoodImages(Long id) {
-        try {
-            Food food = getFoodById(id);
-
-            List<FoodImage> foodImages = foodImageRepository.findByFoodId(food.getId());
-
-            for (FoodImage foodImage : foodImages) {
-                String fileName = foodImage.getImageUrl();
-                FileUtils.deleteFile(foodModule, fileName, detailsPath);
-            }
-
-            foodImageRepository.deleteByFoodId(food.getId());
-        } catch (ResourceNotFoundException e) {
-            throw new ResourceNotFoundException(e.getMessage());
-        } catch (Exception ex) {
-            throw new RuntimeException("Error occurred while deleting by id food " + ex.getMessage());
-        }
-    }
 
     private Food getFoodById(Long id) {
         return foodRepository.findById(id)
@@ -140,6 +98,7 @@ public class FoodServiceImpl implements FoodService {
                         "The food with the specified ID does not exist"
                 ));
     }
+
 
     private Food saveOrUpdateFood(Long id, FoodDto request, MultipartFile imageFile) throws IOException {
         Food food = (id == null) ? new Food() : getFoodById(id);

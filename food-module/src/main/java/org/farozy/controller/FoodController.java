@@ -2,7 +2,6 @@ package org.farozy.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.FoodDto;
-import org.farozy.dto.FoodImagesUploadDto;
 import org.farozy.entity.Food;
 import org.farozy.helper.ResponseHelper;
 import org.farozy.payload.ApiResponse;
@@ -21,6 +20,7 @@ import java.util.List;
 public class FoodController {
 
     private final FoodService foodService;
+
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Food>>> retrieveAll() {
@@ -68,28 +68,4 @@ public class FoodController {
         return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
     }
 
-    @PostMapping("/upload-images")
-    public ResponseEntity<ApiResponse<Food>> uploadImages(
-            FoodImagesUploadDto request, @RequestParam("images") List<MultipartFile> images
-    ) {
-        String successMessage = "Upload images successfully";
-
-        if (images.size() > 5) {
-            return ResponseHelper.buildResponseData(
-                    HttpStatus.BAD_REQUEST, "Max. 5 file image for upload", null
-            );
-        }
-
-        foodService.uploadImages(request, images);
-
-        return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
-    }
-
-    @DeleteMapping("/upload-images/{id}")
-    public ResponseEntity<ApiResponse<Food>> destroyFoodImages(@PathVariable Long id) {
-        foodService.delete(id);
-        String successMessage = "Food Images deleted successfully";
-
-        return ResponseHelper.buildResponseData(HttpStatus.OK, successMessage, null);
-    }
 }

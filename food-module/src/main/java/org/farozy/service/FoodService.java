@@ -19,8 +19,4 @@ public interface FoodService {
 
     void delete(Long id);
 
-    void uploadImages(FoodImagesUploadDto request, List<MultipartFile> images);
-
-    void deleteFoodImages(Long id);
-
 }

@@ -17,8 +17,9 @@ public class FoodImage implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "food_id", nullable = false)
-    private Long foodId;
+    @ManyToOne
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food foodId;
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
@@ -28,11 +29,4 @@ public class FoodImage implements Serializable {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    public FoodImage(Long foodId, String imageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.foodId = foodId;
-        this.imageUrl = imageUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 }
