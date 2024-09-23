@@ -52,8 +52,6 @@ public class FileUploadHelper {
             System.out.println("Error saving image as WebP: " +  e);
         }
 
-//      Files.copy(file.getInputStream(), filePath);
-
         return fileImageName;
     }
 
