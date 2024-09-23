@@ -3,9 +3,11 @@ package org.farozy.controller;
 import lombok.RequiredArgsConstructor;
 import org.farozy.dto.FoodImagesUploadDto;
 import org.farozy.entity.FoodImage;
+import org.farozy.helper.FileUploadProperties;
 import org.farozy.helper.ResponseHelper;
 import org.farozy.payload.ApiResponse;
 import org.farozy.service.FoodImageService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.List;
 public class FoodImageController {
 
     private final FoodImageService foodImageService;
+    private final FileUploadProperties fileUploadProperties;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<FoodImage>> findById(@PathVariable Long id) {
@@ -40,7 +43,7 @@ public class FoodImageController {
     public ResponseEntity<ApiResponse<FoodImage>> uploadImages(
             FoodImagesUploadDto request, @RequestParam("images") List<MultipartFile> images
     ) {
-        if (images.size() > 5) {
+        if (images.size() > fileUploadProperties.getMaxFoodImage()) {
             return ResponseHelper.buildResponseData(
                     HttpStatus.BAD_REQUEST, "Max. 5 file image for upload", null
             );
