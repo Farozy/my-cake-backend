@@ -37,3 +37,7 @@ databaseChangeLog:
       file: classpath:db/changelog/db/modify-field-location-stores-table.yaml
   - include:
       file: classpath:db/changelog/db/create-products-table.yaml
+  - include:
+      file: classpath:db/changelog/db/add-field_store_id-products-table.yaml
+  - include:
+      file: classpath:db/changelog/db/add-field_discount-products-table.yaml

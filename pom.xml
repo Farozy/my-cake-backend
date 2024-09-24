@@ -34,7 +34,6 @@
         <module>authenction-module</module>
         <module>category-module</module>
         <module>store-module</module>
-        <module>food-module</module>
         <module>product-module</module>
     </modules>
     <scm>
