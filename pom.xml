@@ -36,6 +36,7 @@
         <module>store-module</module>
         <module>product-module</module>
         <module>cart-module</module>
+        <module>favorite-module</module>
     </modules>
     <scm>
         <connection/>
