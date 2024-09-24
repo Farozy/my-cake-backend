@@ -79,7 +79,7 @@
         </dependency>
         <dependency>
             <groupId>org.farozy</groupId>
-            <artifactId>food-module</artifactId>
+            <artifactId>product-module</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
