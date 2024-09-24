@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - addColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: discount
+                  type: DECIMAL(5,2)
+                  constraints:
+                    nullable: true
+                  defaultValue: '0'
