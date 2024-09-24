@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.farozy.validation.annotation.image.ImageFileSize;
+import org.farozy.validation.annotation.image.ImageFileType;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
@@ -24,5 +25,6 @@ public class CategoryDto {
 
     @NotNull(message = "Image is required", groups = CreateGroup.class)
     @ImageFileSize(groups = {CreateGroup.class, UpdateGroup.class})
+    @ImageFileType
     private MultipartFile image;
 }

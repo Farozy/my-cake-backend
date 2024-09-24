@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.farozy.validation.annotation.image.ImageFileSize;
+import org.farozy.validation.annotation.image.ImageFileType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class ProductDto {
 
     @NotNull(message = "Image id is required", groups = {CreateGroup.class})
     @ImageFileSize(groups = {CreateGroup.class, UpdateGroup.class})
+    @ImageFileType
     private MultipartFile image;
 
     @NotNull(message = "category id is required", groups = {CreateGroup.class, UpdateGroup.class})
