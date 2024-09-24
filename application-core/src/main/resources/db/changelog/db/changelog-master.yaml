@@ -41,3 +41,5 @@ databaseChangeLog:
       file: classpath:db/changelog/db/add-field_store_id-products-table.yaml
   - include:
       file: classpath:db/changelog/db/add-field_discount-products-table.yaml
+  - include:
+      file: classpath:db/changelog/db/create-product_images-table.yaml

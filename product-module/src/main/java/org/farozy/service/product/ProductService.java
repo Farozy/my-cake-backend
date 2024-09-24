@@ -1,4 +1,4 @@
-package org.farozy.service;
+package org.farozy.service.product;
 
 import org.farozy.dto.ProductDto;
 import org.farozy.entity.Product;
