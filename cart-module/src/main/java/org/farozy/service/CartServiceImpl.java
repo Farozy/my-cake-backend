@@ -51,10 +51,12 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public List<Cart> getCartsByUserId(Long userId) {
         try {
-            List<Cart> carts = cartRepository.findByUserId(userId);
+            User user = findUserById(userId);
+
+            List<Cart> carts = cartRepository.findByUserId(user.getId());
 
             if (carts.isEmpty()) {
-                throw new ResourceNotFoundException("No carts found for user ID: " + userId);
+                throw new ResourceNotFoundException("No carts found for user ID: " + user.getId());
             }
 
             return carts;
@@ -95,9 +97,15 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public void deleteCartByUserId(Long userId) {
         try {
-            findUserById(userId);
+            User user = findUserById(userId);
 
-            cartRepository.deleteByUserId(userId);
+            List<Cart> cart = cartRepository.findByUserId(user.getId());
+
+            if (cart.isEmpty()) {
+                throw new ResourceNotFoundException("No carts found for user ID: " + user.getId());
+            }
+
+            cartRepository.deleteByUserId(user.getId());
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException(e.getMessage());
         } catch (Exception ex) {
@@ -107,6 +115,8 @@ public class CartServiceImpl implements CartService {
 
     public Cart updateCart(Long cartId, CartDto request) {
         try {
+            findCartById(cartId);
+
             return addOrUpdateCart(cartId, request);
         } catch (ResourceNotFoundException e) {
             throw new ResourceNotFoundException(e.getMessage());

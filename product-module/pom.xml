@@ -51,6 +51,21 @@
             <artifactId>store-module</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>shared-exception</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>shared-validation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>shared-utility</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 
