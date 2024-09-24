@@ -87,6 +87,11 @@
             <artifactId>cart-module</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.farozy</groupId>
+            <artifactId>favorite-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 
