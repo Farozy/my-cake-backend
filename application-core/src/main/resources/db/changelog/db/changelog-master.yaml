@@ -45,3 +45,5 @@ databaseChangeLog:
       file: classpath:db/changelog/db/create-product_images-table.yaml
   - include:
       file: classpath:db/changelog/db/create-cart-table.yaml
+  - include:
+      file: classpath:db/changelog/db/modify-field_price-cart-table.yaml
