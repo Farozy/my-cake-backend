@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: farozy
+      changes:
+        - modifyDataType:
+            tableName: carts
+            columnName: price
+            newDataType: INT
+
+      rollback:
+        - modifyDataType:
+            tableName: carts
+            columnName: price
+            newDataType: DECIMAL(10,2)
