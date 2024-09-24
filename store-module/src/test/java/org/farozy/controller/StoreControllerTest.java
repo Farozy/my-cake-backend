@@ -2,103 +2,131 @@
 //
 //import org.farozy.dto.StoreDto;
 //import org.farozy.entity.Store;
-//import org.farozy.payload.ApiResponse;
 //import org.farozy.service.StoreService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.MockitoAnnotations;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.http.MediaType;
+//import org.springframework.test.web.servlet.MockMvc;
+//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 //import org.springframework.web.multipart.MultipartFile;
 //
 //import java.util.Collections;
 //import java.util.List;
-//import java.util.Objects;
 //
-//import static org.junit.jupiter.api.Assertions.assertEquals;
 //import static org.mockito.ArgumentMatchers.any;
+//import static org.mockito.ArgumentMatchers.eq;
 //import static org.mockito.Mockito.*;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 //
+//@SpringBootTest
 //class StoreControllerTest {
 //
-//    @InjectMocks
-//    private StoreController storeController;
+//    private MockMvc mockMvc;
 //
 //    @Mock
 //    private StoreService storeService;
 //
-//    @Mock
-//    private MultipartFile multipartFile;
-//
-//    private StoreDto storeDto;
-//    private Store store;
+//    @InjectMocks
+//    private StoreController storeController;
 //
 //    @BeforeEach
 //    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        storeDto = new StoreDto();
-//        storeDto.setName("Test Store");
-//        storeDto.setDescription("Test Description");
-//        storeDto.setAddress("Test Address");
-//        store = new Store();
-//        store.setId(1L);
-//        store.setName("Test Store");
+//        MockitoAnnotations.initMocks(this);
+//        mockMvc = MockMvcBuilders.standaloneSetup(storeController).build();
 //    }
 //
 //    @Test
-//    void retrieveAll_ShouldReturnStores() {
-//        when(storeService.findAll()).thenReturn(Collections.singletonList(store));
+//    void retrieveAllStores_shouldReturnListOfStores() throws Exception {
+//        Store store = new Store();
+//        store.setId(1L);
+//        store.setName("Store 1");
 //
-//        ResponseEntity<ApiResponse<List<Store>>> response = storeController.retrieveAll();
+//        List<Store> stores = Collections.singletonList(store);
 //
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Stores retrieved all successfully", Objects.requireNonNull(response.getBody()).getMessage());
+//        when(storeService.findAll()).thenReturn(stores);
+//
+//        mockMvc.perform(get("/api/store"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data[0].name").value("Store 1"))
+//                .andExpect(jsonPath("$.message").value("Stores retrieved all successfully"));
+//
 //        verify(storeService, times(1)).findAll();
 //    }
 //
 //    @Test
-//    void findById_ShouldReturnStore() {
+//    void findStoreById_shouldReturnStore() throws Exception {
+//        Store store = new Store();
+//        store.setId(1L);
+//        store.setName("Store 1");
+//
 //        when(storeService.findById(1L)).thenReturn(store);
 //
-//        ResponseEntity<ApiResponse<Store>> response = storeController.findById(1L);
+//        mockMvc.perform(get("/api/store/{id}", 1L))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data.name").value("Store 1"))
+//                .andExpect(jsonPath("$.message").value("Store by ID retrieved successfully"));
 //
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Store by ID retrieved successfully", Objects.requireNonNull(response.getBody()).getMessage());
 //        verify(storeService, times(1)).findById(1L);
 //    }
 //
 //    @Test
-//    void create_ShouldReturnCreatedStore() {
+//    void createStore_shouldReturnCreatedStore() throws Exception {
+//        Store store = new Store();
+//        store.setId(1L);
+//        store.setName("New Store");
+//
+//        StoreDto storeDto = new StoreDto();
+//        storeDto.setName("New Store");
+//
 //        when(storeService.save(any(StoreDto.class), any(MultipartFile.class))).thenReturn(store);
 //
-//        ResponseEntity<ApiResponse<Store>> response = storeController.create(storeDto, multipartFile);
+//        mockMvc.perform(multipart("/api/store")
+//                        .file("image", "test-image.jpg".getBytes())
+//                        .param("name", "New Store")
+//                        .contentType(MediaType.MULTIPART_FORM_DATA))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$.data.name").value("New Store"))
+//                .andExpect(jsonPath("$.message").value("Store created successfully"));
 //
-//        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-//        assertEquals("Store created successfully", Objects.requireNonNull(response.getBody()).getMessage());
 //        verify(storeService, times(1)).save(any(StoreDto.class), any(MultipartFile.class));
 //    }
 //
 //    @Test
-//    void edit_ShouldReturnUpdatedStore() {
+//    void updateStore_shouldReturnUpdatedStore() throws Exception {
+//        Store store = new Store();
+//        store.setId(1L);
+//        store.setName("Updated Store");
+//
+//        StoreDto storeDto = new StoreDto();
+//        storeDto.setName("Updated Store");
+//
 //        when(storeService.update(eq(1L), any(StoreDto.class), any(MultipartFile.class))).thenReturn(store);
 //
-//        ResponseEntity<ApiResponse<Store>> response = storeController.edit(1L, storeDto, multipartFile);
+//        mockMvc.perform(multipart("/api/store/{id}", 1L)
+//                        .file("image", "updated-image.jpg".getBytes())
+//                        .param("name", "Updated Store")
+//                        .contentType(MediaType.MULTIPART_FORM_DATA))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.data.name").value("Updated Store"))
+//                .andExpect(jsonPath("$.message").value("Store updated successfully"));
 //
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Store updated successfully", Objects.requireNonNull(response.getBody()).getMessage());
 //        verify(storeService, times(1)).update(eq(1L), any(StoreDto.class), any(MultipartFile.class));
 //    }
 //
 //    @Test
-//    void destroy_ShouldDeleteStore() {
+//    void deleteStore_shouldReturnSuccessMessage() throws Exception {
 //        doNothing().when(storeService).delete(1L);
 //
-//        ResponseEntity<ApiResponse<Store>> response = storeController.destroy(1L);
+//        mockMvc.perform(delete("/api/store/{id}", 1L))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.message").value("Store deleted successfully"));
 //
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals("Store deleted successfully", Objects.requireNonNull(response.getBody()).getMessage());
 //        verify(storeService, times(1)).delete(1L);
 //    }
 //}
+//
