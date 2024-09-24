@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class FileUploadProperties {
-    private int maxFoodImage = 5;
+    private int maxProductImage = 5;
 }

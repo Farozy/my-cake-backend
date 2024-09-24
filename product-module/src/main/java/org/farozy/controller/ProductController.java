@@ -5,7 +5,7 @@ import org.farozy.dto.ProductDto;
 import org.farozy.entity.Product;
 import org.farozy.helper.ResponseHelper;
 import org.farozy.payload.ApiResponse;
-import org.farozy.service.ProductService;
+import org.farozy.service.product.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
